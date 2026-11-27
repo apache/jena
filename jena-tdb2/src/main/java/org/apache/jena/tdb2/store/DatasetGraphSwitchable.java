@@ -28,8 +28,10 @@ import org.apache.jena.atlas.lib.Cache;
 import org.apache.jena.atlas.lib.CacheFactory;
 import org.apache.jena.dboe.base.file.Location;
 import org.apache.jena.dboe.storage.system.DatasetGraphTxnCtl;
+import org.apache.jena.dboe.transaction.txn.TransactionalSystemControl;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Node;
+import org.apache.jena.query.TxnType;
 import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Quad;
@@ -52,14 +54,42 @@ public class DatasetGraphSwitchable extends DatasetGraphTxnCtl
         this.prefixes = new PrefixMapSwitchable(this);
     }
 
+    ThreadLocal<DatasetGraph> txnDataset = ThreadLocal.withInitial(()->null);
+
     /**
-     * The dataset to use for redirection - this can be overridden.
-     * It is also guaranteed that this is called only once per
-     * delegated call.  Changes to the wrapped object can be
-     * made based on that contract.
+     * The dataset to use for redirection - overrides DatasetGraphWrapper.get().
+     * <p>
+     * The dataset for a transaction is kept in a {@link ThreadLocal} so that even if
+     * a {@code #change} or {@link #set} occurs, operations, especially transaction
+     * operations go the original dataset.
+     * </p>
+     * <p>
+     * Beware - the code using {@code DatasetGraphSwitchable} is responsible for
+     * managing a switchover. For example, in TDB2, compact only calls
+     * {@link #change} on a read-only database, i.e. there are only read transactions
+     * active using {@link TransactionalSystemControl#execReadOnlyDatabase}
+     * </p>
+     * <p>
+     * Other use cases, such as reloading Fuseki configuration, might switchover in
+     * any transaction state and the reload code would need control cases where
+     * certain configurations need addition pre-swithcover setup.
+     * </p>
      */
     @Override
-    public DatasetGraph get() { return dsgx.get(); }
+    public DatasetGraph get() {
+        // Touching a ThreadLocal initializes it and creates a ThreadLocalMap entry.
+        DatasetGraph txnDSG = txnDataset.get();
+        if ( txnDSG != null )
+            return txnDSG;
+        // ThreadLocalMap attempts to recover slots if it needs to grow the table.
+        // AFS understanding is that this means a slot set to null will be released
+        // by slot recovery and not by eventual pressure on the heap.
+        // Calling txnDataset.remove() causes a ThreadLocal access.
+        // get() may be called frequently.
+//        else
+//            txnDataset.remove();
+        return dsgx.get();
+    }
 
     /**
      * Is this {@code DatasetGraphSwitchable} just a holder for a {@code DatasetGraph}?
@@ -82,6 +112,16 @@ public class DatasetGraphSwitchable extends DatasetGraphTxnCtl
     @Override
     public PrefixMap prefixes() {
         return prefixes;
+    }
+
+    @Override
+    protected void notifyEnterTransaction(TxnType txnType, boolean canBlock) {
+        txnDataset.set(dsgx.get());
+    }
+
+    @Override
+    protected void notifyExitTransaction() {
+        txnDataset.remove();
     }
 
     /**

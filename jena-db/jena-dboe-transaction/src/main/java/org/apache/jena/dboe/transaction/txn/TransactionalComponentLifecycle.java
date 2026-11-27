@@ -220,7 +220,6 @@ public abstract class TransactionalComponentLifecycle<X> implements Transactiona
         setTrackTxn(state.state);
         setTransaction(state.txn);
         setDataState(state.componentState);
-
     }
 
     protected void releaseThreadState() {
@@ -263,13 +262,13 @@ public abstract class TransactionalComponentLifecycle<X> implements Transactiona
     // -- Access object members.
 
     /* There are two lifecycles, one for write transaction, one
-     * for read transactions. This affects how transaction end so
+     * for read transactions. This affects how transactions end so
      * when/if promoted read->write transactions happen, a promoted
      * transaction will follow the write lifecycle.
      *
-     * In both lifecyles, the implementer can assume that calls
-     * happen at the right points and called only as needed.  Framework
-     * takes care of checking.
+     * In both lifecycles, the implementer can assume that calls
+     * happen at the right points and called only as needed.
+     * The framework takes care of checking.
      *
      * Read lifecycle:
      * A read transaction be be just begin(READ)-end() but may also

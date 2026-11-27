@@ -141,6 +141,7 @@ public class DatasetGraphTxnCtl extends DatasetGraphWrapper implements Transacti
                 break;
             }
         }
+        notifyEnterTransaction(txnType, canBlockWriters);
     }
 
     private void exitTransaction(TxnType txnType) {
@@ -155,6 +156,7 @@ public class DatasetGraphTxnCtl extends DatasetGraphWrapper implements Transacti
             }
         }
         finishNonExclusiveMode();
+        notifyExitTransaction();
     }
 
     // Called BEFORE the transaction starts on the current thread
