@@ -43,7 +43,9 @@ public class ParserARQUpdate extends UpdateParser {
             parser.setUpdate(prologue, sink);
             parser.UpdateUnit();
         } catch (org.apache.jena.sparql.lang.arq.javacc.ParseException ex) {
-            throw new QueryParseException(ex.getMessage(), ex.currentToken.beginLine, ex.currentToken.beginColumn);
+            // The error is at the token after the last successfully consumed token.
+            var errorToken = ex.currentToken.next != null ? ex.currentToken.next : ex.currentToken;
+            throw new QueryParseException(ex.getMessage(), errorToken.beginLine, errorToken.beginColumn);
         } catch (org.apache.jena.sparql.lang.arq.javacc.TokenMgrError tErr) {
             // Last valid token : not the same as token error message - but this
             // should not happen

@@ -83,8 +83,10 @@ public class TurtleJavaccReaderRIOT implements ReaderRIOT {
             throw ex;
         }
         catch (ParseException ex) {
-            profile.getErrorHandler().error(ex.getMessage(), ex.currentToken.beginLine, ex.currentToken.beginColumn);
-            throw new RiotParseException(ex.getMessage(), ex.currentToken.beginLine, ex.currentToken.beginColumn);
+            // The error is at the token after the last successfully consumed token.
+            var errorToken = ex.currentToken.next != null ? ex.currentToken.next : ex.currentToken;
+            profile.getErrorHandler().error(ex.getMessage(), errorToken.beginLine, errorToken.beginColumn);
+            throw new RiotParseException(ex.getMessage(), errorToken.beginLine, errorToken.beginColumn);
         }
         catch (TokenMgrError ex) {
             profile.getErrorHandler().error(ex.getMessage(), -1, -1);
