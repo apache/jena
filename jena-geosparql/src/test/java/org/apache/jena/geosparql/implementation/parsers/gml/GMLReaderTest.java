@@ -23,6 +23,7 @@ package org.apache.jena.geosparql.implementation.parsers.gml;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import org.apache.jena.datatypes.DatatypeFormatException;
 import org.apache.jena.geosparql.implementation.DimensionInfo;
 import org.apache.jena.geosparql.implementation.jts.CoordinateSequenceDimensions;
 import org.apache.jena.geosparql.implementation.jts.CustomCoordinateSequence;
@@ -32,6 +33,7 @@ import org.jdom2.JDOMException;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -631,6 +633,26 @@ public class GMLReaderTest {
             assertEquals(literal, CoordinateSequenceDimensions.XYZ,
                     DimensionInfo.find(geometry, CoordinateSequenceDimensions.XY).getDimensions());
         }
+    }
+
+    @Test
+    public void testSurfaceInteriorWithoutExteriorThrowsDatatypeFormatException() {
+        String gml = """
+            <gml:Surface xmlns:gml="http://www.opengis.net/gml/3.2"
+                srsName="http://www.opengis.net/def/crs/EPSG/0/27700">
+                <gml:patches>
+                    <gml:PolygonPatch>
+                        <gml:interior>
+                            <gml:LinearRing>
+                                <gml:posList>20 30 35 35 30 20 20 30</gml:posList>
+                            </gml:LinearRing>
+                        </gml:interior>
+                    </gml:PolygonPatch>
+                </gml:patches>
+            </gml:Surface>
+            """;
+
+        assertThrows(DatatypeFormatException.class, () -> GMLReader.extract(gml));
     }
 
     /**
