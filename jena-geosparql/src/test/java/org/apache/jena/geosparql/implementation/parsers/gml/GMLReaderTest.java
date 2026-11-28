@@ -309,6 +309,28 @@ public class GMLReaderTest {
     }
 
     /**
+     * Test of extract method, of class GMLReader, for a gml:Surface whose
+     * gml:PolygonPatch has an interior ring.
+     *
+     * @throws org.jdom2.JDOMException
+     * @throws java.io.IOException
+     */
+    @Test
+    public void testExtractSurfaceHole() throws JDOMException, IOException {
+
+        LinearRing shell = GEOMETRY_FACTORY.createLinearRing(new CustomCoordinateSequence(CoordinateSequenceDimensions.XY, "30 10, 40 40, 20 40, 10 20, 30 10"));
+        LinearRing[] holes = new LinearRing[]{GEOMETRY_FACTORY.createLinearRing(new CustomCoordinateSequence(CoordinateSequenceDimensions.XY, "20 30, 35 35, 30 20, 20 30"))};
+        Geometry geometry = GEOMETRY_FACTORY.createPolygon(shell, holes);
+        GMLReader expResult = new GMLReader(geometry, 2, SRS_URI.OSGB36_CRS);
+
+        String gmlText = "<gml:Surface xmlns:gml=\"http://www.opengis.net/gml/3.2\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/27700\"><gml:patches><gml:PolygonPatch><gml:exterior><gml:LinearRing><gml:posList>30 10 40 40 20 40 10 20 30 10</gml:posList></gml:LinearRing></gml:exterior><gml:interior><gml:LinearRing><gml:posList>20 30 35 35 30 20 20 30</gml:posList></gml:LinearRing></gml:interior></gml:PolygonPatch></gml:patches></gml:Surface>";
+        GMLReader result = GMLReader.extract(gmlText);
+
+        assertEquals(1, ((Polygon) result.getGeometry()).getNumInteriorRing());
+        assertEquals(expResult, result);
+    }
+
+    /**
      * Test of extract method, of class GMLReader.
      *
      * @throws org.jdom2.JDOMException
