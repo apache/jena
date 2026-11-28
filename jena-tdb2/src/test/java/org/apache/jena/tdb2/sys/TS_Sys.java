@@ -26,13 +26,14 @@ import org.junit.platform.suite.api.Suite;
 
 @Suite
 @SelectClasses({
-    TestDatabaseOps.class
-    , TestDatabaseCompact.class
-    , TestDatabaseConnection.class
-    , TestSys.class
-    , TestTransactionalSystemControl.class
+    TestSys.class
     , TestNormalizationTDB2.class
     , TestNormalizedTermsTDB2.class
+    , TestDatabaseConnection.class
+    , TestDatabaseOps.class
+    , TestDatabaseSwitchable.class
+    , TestDatabaseCompact.class
+    , TestTransactionalSystemControl.class
 })
 
 public class TS_Sys
