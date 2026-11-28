@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see <a href="http://www.w3.org/TR/n-triples/">http://www.w3.org/TR/n-triples/</a>
  */
-public final class LangNTriples extends LangNTuple<Triple>
+public class LangNTriples extends LangNTuple<Triple>
 {
     private static Logger messageLog = LoggerFactory.getLogger("N-Triples");
 
@@ -69,7 +69,7 @@ public final class LangNTriples extends LangNTuple<Triple>
 
     @Override
     protected final Triple parseOneStatement() {
-        if ( parsePossibleVersion() )
+        if ( parsePossibleKeywordDirective() )
             return null;
         Triple triple = parseTriple();
         Token x = nextToken();

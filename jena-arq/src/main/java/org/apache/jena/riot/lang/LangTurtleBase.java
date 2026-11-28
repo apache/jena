@@ -99,7 +99,8 @@ public abstract class LangTurtleBase extends LangBase {
 
             if ( lookingAt(KEYWORD) ) {
                 String text = t.getImage();
-                if ( text.equalsIgnoreCase("PREFIX") || text.equalsIgnoreCase("BASE") || text.equalsIgnoreCase("VERSION") ) {
+                // GRAPH is a TriG keyword, not a directive.
+                if ( ! text.equalsIgnoreCase("GRAPH")  ) {
                     directiveKeyword();
                     continue;
                 }
@@ -141,8 +142,11 @@ public abstract class LangTurtleBase extends LangBase {
             directiveVersion();
             return;
         }
+        handleUnrecognizedKeywordDirective(t, x);
+    }
 
-        exception(t, "Unrecognized keyword for directive: %s", x);
+    protected void handleUnrecognizedKeywordDirective(Token token, String directive) {
+        exception(token, "Unrecognized keyword for directive: %s", directive);
     }
 
     // Directive, @-form.
@@ -182,6 +186,7 @@ public abstract class LangTurtleBase extends LangBase {
                 skipIf(DOT);
             return;
         }
+        // No extension point. AtDirectives look like language tags.
         exception(t, "Unrecognized directive: %s", x);
     }
 
