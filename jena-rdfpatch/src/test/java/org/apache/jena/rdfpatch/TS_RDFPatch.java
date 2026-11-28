@@ -26,6 +26,7 @@ import org.junit.platform.suite.api.Suite;
 
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.rdfpatch.filelog.TestAssemblerFileLog;
+import org.apache.jena.rdfpatch.filelog.TestRDFChangesManagedOutput;
 import org.apache.jena.rdfpatch.filelog.TestRotate;
 
 @Suite
@@ -38,6 +39,7 @@ import org.apache.jena.rdfpatch.filelog.TestRotate;
     , TestRDFChangesCancel.class
     , TestRotate.class
     , TestAssemblerFileLog.class
+    , TestRDFChangesManagedOutput.class
 })
 
 public class TS_RDFPatch {
