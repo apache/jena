@@ -44,6 +44,7 @@ import org.apache.jena.sparql.expr.ExprException;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.expr.nodevalue.XSDFuncOp;
 import org.apache.jena.sparql.util.XSDNumUtils;
+import org.apache.jena.util.XML10Char;
 
 /**
  * Code for all casting between XSD datatypes.
@@ -284,17 +285,8 @@ public class CastXSD {
             return NodeValue.TRUE;
         }
         if ( nv.isString() ) {
-            String str = nv.getString();
-            switch (str) {
-                case "0":
-                case "false":
-                    return NodeValue.FALSE;
-                case "1":
-                case "true":
-                    return NodeValue.TRUE;
-                default:
-                    throw exception(nv, castType);
-            }
+            boolean b = castByLex(nv, castType).getBoolean();
+            return b ? NodeValue.TRUE : NodeValue.FALSE;
         }
         return castByLex(nv, castType);
     }
@@ -440,23 +432,24 @@ public class CastXSD {
 
     // Cast by lexical form with checking.
     private static NodeValue castByLex(String lex, XSDDatatype castType) {
+        if ( isWhitespaceCollapsed(castType) )
+            // Remove empty white space around values
+            lex = XML10Char.trim(lex);
         if ( ! castType.isValid(lex) )
             throw exception("Invalid lexical form: '"+lex+"' for "+castType.getURI());
-        if ( castType instanceof XSDBaseNumericType ||
-            castType.equals(XSDDatatype.XSDfloat) ||
-            castType.equals(XSDDatatype.XSDdouble) ||
-            castType.equals(XSDDatatype.XSDboolean) ||
-            castType instanceof XSDAbstractDateTimeType )   // Includes durations, and Gregorian
-        {
-            // More helpful error message.
-            if ( lex.startsWith(" ") || lex.endsWith(" ") )
-                throw exception("Not a valid literal form (has whitespace): '"+lex+"'");
-        }
         NodeValue nv2 = NodeValue.makeNode(lex, castType);
         RDFDatatype dt = nv2.getNode().getLiteralDatatype();
         if ( castType.equals(dt) )
             return nv2;
         throw exception("Can not cast '"+lex+"' to a "+castType);
+    }
+
+    private static boolean isWhitespaceCollapsed(XSDDatatype castType) {
+        return castType instanceof XSDBaseNumericType ||
+               castType.equals(XSDDatatype.XSDfloat) ||
+               castType.equals(XSDDatatype.XSDdouble) ||
+               castType.equals(XSDDatatype.XSDboolean) ||
+               castType instanceof XSDAbstractDateTimeType;   // Includes durations, and Gregorian
     }
 
     // Known to work casts.  No checking.

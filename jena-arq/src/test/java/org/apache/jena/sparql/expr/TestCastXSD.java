@@ -140,6 +140,47 @@ public class TestCastXSD {
     @Test public void cast_to_gregorian_03() { testCast     ("xsd:gMonthDay('2015-10-12'^^xsd:date)",    "'--10-12'^^xsd:gMonthDay"); }
     @Test public void cast_to_gregorian_04() { testCast     ("xsd:gYearMonth('2015-10-12'^^xsd:date)",   "'2015-10'^^xsd:gYearMonth"); }
 
+    // Leading and trailing XML whitespace is removed for datatypes with whitespace facet "collapse".
+    // The result has the lexical form without the whitespace.
+    @Test public void cast_numeric_whitespace() {
+        for ( String type : new String[]{"integer", "decimal", "float", "double", "byte"} ) {
+            for ( String lex : new String[]{" 1", "1 ", " \\t\\r\\n1\\n\\r\\t "} )
+                testCast("xsd:"+type+"('"+lex+"')", "'1'^^xsd:"+type);
+        }
+    }
+
+    @Test public void cast_boolean_whitespace() {
+        for ( String token : new String[]{"true", "false", "1", "0"} ) {
+            String expected = token.equals("true") || token.equals("1") ? "true" : "false";
+            testCast("xsd:boolean(' "+token+"')", expected);
+            testCast("xsd:boolean('"+token+" ')", expected);
+            testCast("xsd:boolean(' \\t\\r\\n"+token+"\\n\\r\\t ')", expected);
+        }
+    }
+
+    @Test public void cast_duration_whitespace() {
+        testCast("xsd:duration(' P1D ')",              "'P1D'^^xsd:duration");
+        testCast("xsd:dayTimeDuration(' PT10S ')",     "'PT10S'^^xsd:dayTimeDuration");
+        testCast("xsd:yearMonthDuration(' P1Y2M ')",   "'P1Y2M'^^xsd:yearMonthDuration");
+        testNoCast("xsd:duration(' P 1D ')");
+    }
+
+    @Test public void cast_invalid_whitespace() {
+        for ( String type : new String[]{"integer", "decimal", "float", "double", "boolean"} ) {
+            for ( String lex : new String[]{"", " \\t\\r\\n", "1 2", "abc", "\u00A01\u00A0"} )
+                testNoCast("xsd:"+type+"('"+lex+"')");
+        }
+        testNoCast("xsd:boolean(' tr ue ')");
+        testNoCast("xsd:boolean(' TRUE ')");
+        testNoCast("xsd:byte(' 128 ')");
+        testNoCast("xsd:unsignedInt(' -1 ')");
+    }
+
+    // xsd:string keeps the whitespace.
+    @Test public void cast_string_whitespace() {
+        testCast("xsd:string(' 1 ')", "' 1 '");
+    }
+
     private void testNoCast(String input) {
         try {
             cast(input);
