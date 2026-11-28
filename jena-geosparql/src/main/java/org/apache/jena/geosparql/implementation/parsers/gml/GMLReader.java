@@ -529,16 +529,24 @@ public class GMLReader implements ParserReader {
         List<Polygon> polys = new ArrayList<>();
         for (Element patch : polygonPatches) {
 
-            LinearRing exteriorLinearRing;
             //Exterior shell - [0..1]
             Element exteriorElement = patch.getChild("exterior", GML_NAMESPACE);
+
+            //Interior shell - [0..*]
+            List<Element> patchInteriorElements = patch.getChildren("interior", GML_NAMESPACE);
+
+            if (exteriorElement == null && !patchInteriorElements.isEmpty()) {
+                throw new DatatypeFormatException(
+                        "GML PolygonPatch contains interior rings but no exterior ring: " + patch);
+            }
+
+            LinearRing exteriorLinearRing;
             if (exteriorElement != null) {
                 Geometry exteriorGeom = buildSurfacePatch(exteriorElement, dims, srsInfo);
                 exteriorLinearRing = GEOMETRY_FACTORY.createLinearRing(exteriorGeom.getCoordinates());
             } else {
                 exteriorLinearRing = GEOMETRY_FACTORY.createLinearRing(new CustomCoordinateSequence(dims));
             }
-
             //Interior shell - [0..*]
             List<Element> interiorElements = gmlElement.getChildren("interior", GML_NAMESPACE);
             List<LinearRing> interiorList = new ArrayList<>();
